@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web>
+<servlet>
+    <servlet-name>MyServlet</servlet-name>
+    <servlet-class>com.lc.test.MyServlet</servlet-class>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>MyServlet</servlet-name>
+    
+    <url-pattern>/*</url-pattern>
+</servlet-mapping>
+</web>
+
+
+

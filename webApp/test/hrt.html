@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- vue Http请求 -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+  <body>
+
+    <div id="form" class="container-fluid p-0">
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <h1 class="display-3">银行后台</h1>
+                    <p class="lead">BANK</p>
+                </div>
+            </div>
+            
+        <div class="row">
+            <div class="col-lg">
+                   
+                <div class="card">
+                    <div class="card-body">
+                            <label for="" class="display-4">表单</label>
+                        <div class="form-group">
+                          <label for="" class="mt-3">转账ID:</label>
+                    
+                          <input v-model="id" type="text" name="" id="" class="form-control" placeholder="0" aria-describedby="helpId">
+
+                          <label for="" class="mt-3">转入方ID:</label>
+                          <input v-model="rid" type="text" name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                         
+                            
+                           <label for="" class="mt-3">转账金额:</label>
+                          <input v-model="money" type="text" name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
+
+                         <button @click="save()" type="button" name="" id="" class="btn btn-primary btn-lg btn-block">转账</button>
+                       
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>转入方ID</th>
+                            <th>转账ID</th>
+                            <th>金额</th>
+                            <th>时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in obj">
+                            <td scope="row">{{item.to}}</td>
+                            <td>{{item.from}}</td>
+                            <td>{{item.money}} ￥</td>
+                            <td>{{item.time}}</td>
+                            <td>
+                                <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#eidt" @click="show(index)">编辑</button>
+                                 <button @click="remove(index)" type="button" class="btn btn-danger" >删除</button>      
+                              
+                                </td>
+                        </tr>
+                       
+                    </tbody>
+                </table>
+                 <!-- Modal -->
+                 <div class="modal fade" id="eidt" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                         <span aria-hidden="true">&times;</span>
+                                     </button>
+                                <h5 class="modal-title">修改信息</h5>
+                                    
+                            </div>
+                            <div class="modal-body">
+                                 <div class="card">
+                                         <div class="card-body">
+                                                 <label for="" class="display-4">表单</label>
+                                             <div class="form-group">
+                                               <label for="" class="mt-3">编号</label>
+                                         
+                                               <input v-model="id" type="text" name="" id="" class="form-control" placeholder="0" aria-describedby="helpId">
+                     
+                                               <label for="" class="mt-3">姓名</label>
+                                               <input v-model="name" type="text" name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                     
+                                               <label for="" class="mt-3">职位</label>
+                                                <select v-model="job"  class="form-control" name="" id="">
+                                                  <option selected>前端工程师</option>
+                                                  <option>java工程师</option>
+                                                  <option>php工程师</option>
+                                                </select>
+                                                
+                                              
+                                                 
+                                                <label for="" class="mt-3">联系方式</label>
+                                               <input v-model="phone" type="text" name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                     
+     
+                                            
+                                             </div>
+                                         </div>
+                                     </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                <button @click="eidt()" type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    let vem=new Vue({
+        el:'#form',
+        data:{
+            id:0,
+            rid:0,
+            money:0,
+            obj:[]
+        },
+        mounted() {
+           var _this=this;
+            axios.post("http://localhost:8080/b/all", {
+                params: {
+                    action:'first'
+                }
+            })
+            .then(function (response) {
+                console.log(response.data);
+                _this.obj=response.data[0];
+            })
+            .catch(function (error) {
+                alert('no');
+            })
+        },
+        methods:{
+           save:function(){
+             
+                 /* var obj={id:+this.id,name:this.name,job:this.job,phone:this.phone};
+                   var _this=this;
+                  obj=JSON.stringify(obj);*/
+                   axios.post("hr?action=save&id="+this.id+"&name="+this.name+"&job="+this.job+"&phone="+this.phone
+                   , {
+
+                   })
+                   .then(function (response) {
+                       console.log(response.data);
+                       _this.obj.push(response.data.obj);
+                   })
+                   .catch(function (error) {
+                   })
+
+               
+           } ,
+           show:function(i){
+               this.i=i;
+              this.id=this.obj[i].id;
+              this.name=this.obj[i].name;
+              this.job=this.obj[i].job;
+              this.phone=this.obj[i].phone;
+           },
+           eidt:function(){
+
+                   var _this=this;
+
+                   axios.post("hr?action=edit&id="+this.id+"&name="+this.name+"&job="+this.job+"&phone="+this.phone
+                   , {
+
+                   })
+                   .then(function (response) {
+                       console.log(response.data);
+                       _this.obj[_this.i].name=response.data.obj.name;
+                       _this.obj[_this.i].job=response.data.obj.job;
+                       _this.obj[_this.i].phone=response.data.obj.phone;
+                   })
+                   .catch(function (error) {
+                   })
+           },
+           remove:function(i){
+              var _this=this;
+               axios.post("hr?action=del&id="+(i+1), {
+                   
+               })
+               .then(function (response) {
+                   alert('ok');
+                   _this.obj.splice(i,1);
+               })
+               .catch(function (error) {
+               })
+              // this.obj.splice(i,1);
+
+           }
+        }
+
+
+    });
+    </script>
+      
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  </body>
+</html>
